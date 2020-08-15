@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
 from numpy.polynomial.polynomial import Polynomial
 from numpy.linalg import pinv as pseudoInverse
 from numpy import linspace, matmul, random
@@ -54,7 +53,6 @@ def subRoutine(polyDegree):
 	plt.legend(loc="upper center")
 	plt.xlabel("x")
 	plt.ylabel("y")
-	plt.savefig('./images/poly_{polyDegree}_degree_{samples}_samples.png'.format(polyDegree=polyDegree, samples=samples))
 
 
 xStart, xEnd = -15, 10
@@ -67,5 +65,3 @@ y = randomSamples["y"]
 
 for polyDegree in range(1, 9):
 	subRoutine(polyDegree)
-
-
