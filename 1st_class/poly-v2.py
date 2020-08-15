@@ -2,6 +2,7 @@
 import numpy as np
 import plotly.express as px
 from IPython.core.interactiveshell import InteractiveShell
+
 InteractiveShell.ast_node_interactivity = "all"
 
 
@@ -23,7 +24,7 @@ def evaluateFunction(func, iterable):
 
 def getH(xArr, polyDegree):
     def calculateHLine(x):
-        return list(map(lambda degree: pow(x, degree), range(polyDegree+1)))
+        return list(map(lambda degree: pow(x, degree), range(polyDegree + 1)))
 
     return list(map(calculateHLine, xArr))
 

@@ -1,10 +1,12 @@
 #%%
 from IPython.core.interactiveshell import InteractiveShell
+
 InteractiveShell.ast_node_interactivity = "all"
 
 # %%
 import numpy as np
 import plotly.express as px
+
 
 def getRandomArray(xStart, xEnd, nSamples):
     return np.array([np.random.uniform(xStart, xEnd) for _ in range(nSamples)])
@@ -24,7 +26,7 @@ def evaluateFunction(func, iterable):
 
 def getH(xArr, polyDegree):
     def calculateHLine(x):
-        return np.array(list(map(lambda degree: pow(x, degree), range(polyDegree+1))))
+        return np.array(list(map(lambda degree: pow(x, degree), range(polyDegree + 1))))
 
     return np.array(list(map(calculateHLine, xArr)))
 
@@ -63,7 +65,7 @@ def subRoutine(polyDegree):
     yApprox = evaluateFunction(approxPoly, xArr)
     print("degree: " + str(polyDegree))
     print("coefs:", str(approxPoly.coef))
-    fig=px.scatter(x=xArr, y=yApprox)
+    fig = px.scatter(x=xArr, y=yApprox)
     fig.show()
 
 
