@@ -1,3 +1,10 @@
+# %%
+xStart, xEnd = -15, 10
+nSamples = 10
+mu, sigma = 0, 4
+
+originalPoly = np.polynomial.Polynomial([10, 3, 0.5])
+
 #%%
 from IPython.core.interactiveshell import InteractiveShell
 
@@ -42,15 +49,24 @@ def getApproxPoly(xArr, yArr, polyDegree):
     return np.polynomial.Polynomial(weights)
 
 
+def plotPoly(poly, xStart, xEnd, nSamples):
+    xArr = np.linspace(xStart, xEnd, nSamples)
+    yArr = evaluateFunction(poly, xArr)
+    fig = px.line(x=xArr, y=yArr)
+    fig.show()
+
+
 # %%
-xStart, xEnd = -15, 10
-nSamples = 10
-mu, sigma = 0, 4
-
-originalPoly = np.polynomial.Polynomial([10, 3, 0.5])
+def subRoutine(xArr, polyDegree):
+    approxPoly = getApproxPoly(xArr, yArrNoisy, polyDegree)
+    print("degree: " + str(polyDegree))
+    print("coefs:", str(approxPoly.coef))
+    plotPoly(approxPoly, xStart, xEnd, 1000)
 
 
 # %%
+plotPoly(originalPoly, xStart, xEnd, 1000)
+
 xArr = getRandomArray(xStart, xEnd, nSamples)
 yArr = evaluateFunction(originalPoly, xArr)
 yArrNoisy = addGaussianNoise(yArr, mu, sigma)
@@ -58,17 +74,5 @@ yArrNoisy = addGaussianNoise(yArr, mu, sigma)
 px.scatter(x=xArr, y=yArrNoisy)
 
 # %%
-
-
-def subRoutine(polyDegree):
-    approxPoly = getApproxPoly(xArr, yArrNoisy, polyDegree)
-    yApprox = evaluateFunction(approxPoly, xArr)
-    print("degree: " + str(polyDegree))
-    print("coefs:", str(approxPoly.coef))
-    fig = px.scatter(x=xArr, y=yApprox)
-    fig.show()
-
-
-# %%
 for degree in range(2, 3):
-    subRoutine(degree)
+    subRoutine(xArr, degree)
