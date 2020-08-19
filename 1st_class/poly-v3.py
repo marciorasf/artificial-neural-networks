@@ -1,10 +1,3 @@
-# %%
-xStart, xEnd = -15, 10
-nSamples = 10
-mu, sigma = 0, 4
-
-originalPoly = np.polynomial.Polynomial([10, 3, 0.5])
-
 #%%
 from IPython.core.interactiveshell import InteractiveShell
 
@@ -13,6 +6,14 @@ InteractiveShell.ast_node_interactivity = "all"
 # %%
 import numpy as np
 import plotly.express as px
+
+
+# %%
+xStart, xEnd = -15, 10
+nSamples = 10
+mu, sigma = 0, 4
+
+originalPoly = np.polynomial.Polynomial([10, 3, 0.5])
 
 
 def getRandomArray(xStart, xEnd, nSamples):
