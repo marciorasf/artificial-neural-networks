@@ -2,13 +2,16 @@ import numpy as np
 
 
 class Adaline:
-    def __init__(self, weights=[1], learnRate=0.1):
+    def __init__(self, weights=[1], learnRate=0.1, activationFunction=lambda x: x):
         self.__weights = np.array(weights)
         self.__learnRate = learnRate
         self.__nTrains = 0
+        self.__activationFunction = activationFunction
 
     def evaluate(self, xMatrix):
-        return np.dot(xMatrix, np.transpose(self.__weights))
+        return np.vectorize(self.__activationFunction)(
+            np.dot(xMatrix, np.transpose(self.__weights))
+        )
 
     def train(self, xMatrix, yArr, tol=1e-5, maxIterations=1):
         for _ in range(maxIterations):
@@ -22,8 +25,7 @@ class Adaline:
 
     def test(self, xMatrix, yArr):
         approxYArr = self.evaluate(xMatrix)
-        errorArr = yArr - approxYArr
-        meanSquaredError = (errorArr**2).mean()
+        meanSquaredError = ((yArr - approxYArr) ** 2).mean()
         return meanSquaredError
 
     def singleTrain(self, xArr, y):
@@ -35,3 +37,6 @@ class Adaline:
 
     def printDetails(self):
         print(f"Weights: {self.__weights}\nTimes trained: {self.__nTrains}")
+
+    def getWeights(self):
+        return self.__weights
