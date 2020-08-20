@@ -1,4 +1,4 @@
-# %%
+# %% Imports
 import re
 import numpy as np
 import random
@@ -13,7 +13,7 @@ sys.path.insert(1, "../utils")
 from separateIndexesByRatio import separateIndexesByRatio
 
 
-# %%
+# %% Declare functions
 def getFileData(path, cols):
     data = np.loadtxt(path, usecols=cols)
     return data
@@ -34,7 +34,6 @@ def addConstantTerm(arr):
     return newArr
 
 
-# %%
 class Adaline:
     def __init__(self, weights=[1], learnRate=0.1):
         self.__weights = np.array(weights)
@@ -50,9 +49,10 @@ class Adaline:
 
     def singleTrain(self, xArr, y):
         approxY = self.evaluate(xArr)
-        learnResult = self.__learnRate * (y - approxY)
-        self.__weights = np.add(self.__weights, learnResult * xArr)
+        error = y - approxY
+        self.__weights = np.add(self.__weights, self.__learnRate * error * xArr)
         self.__nTrains += 1
+        return error
 
     def test(self, xArr, y):
         approxY = self.evaluate(xArr)
@@ -60,28 +60,45 @@ class Adaline:
 
     def train(self, xMatrix, yArr, tol=1e-5, maxIterations=1):
         for _ in range(maxIterations):
+            iterationError = 0
             for index in range(len(yArr)):
-                adaline.singleTrain(xMatrix[index], yArr[index])
+                error = adaline.singleTrain(xMatrix[index], yArr[index])
+                iterationError += error ** 2
+
+            if iterationError < tol:
+                break
 
     def printDetails(self):
-        print(f"weights: {self.__weights}\nTimes tested: {self.__nTrains}")
+        print(f"weights: {self.__weights}\nTimes trained: {self.__nTrains}")
 
 
 # %% Initialize data
-timeSamples = getFileData("data/Ex2_t", (1))
-xSamples = getFileData("data/Ex2_x", (1, 2, 3))
+filePrefix = "Ex1"
+xDimension = 1
+tol = 1e-14
+maxIterations = 100
+
+timeSamples = getFileData(f"data/{filePrefix}_t", (1))
+xSamples = np.array(
+    getFileData(f"data/{filePrefix}_x", tuple(range(1, xDimension + 1)))
+)
+
+if xDimension == 1:
+    xSamples = xSamples.reshape(len(xSamples), 1)
+
 adalineXSamples = addConstantTerm(xSamples)
-ySamples = getFileData("data/Ex2_y", (1))
+ySamples = getFileData(f"data/{filePrefix}_y", (1))
 
 trainSamplesRatio = 0.7
 trainIndexes, testIndexes = separateIndexesByRatio(len(timeSamples), 0.7)
 
 # %% Initialize and Train Adaline
-adaline = Adaline([1, 1, 1, 1], 0.1)
+adaline = Adaline([1] * (xDimension + 1), 0.1)
 
 xTrain = adalineXSamples[trainIndexes]
 yTrain = ySamples[trainIndexes]
-adaline.train(xTrain, yTrain, 1e-5, 10)
+adaline.train(xTrain, yTrain, tol, maxIterations)
+
 # %% Test
 testResult = np.array([])
 for index in testIndexes:
@@ -89,22 +106,21 @@ for index in testIndexes:
         testResult, adaline.test(adalineXSamples[index], ySamples[index])
     )
 
-squarer = np.vectorize(lambda xSample: xSample ** 2)
+squarer = np.vectorize(lambda x: x ** 2)
 meanSquaredError = np.mean(squarer(testResult))
 print(meanSquaredError)
 
-
 # %%
 adalineResult = np.array([])
-for sampleInput in adalineXSamples:
-    adalineResult = np.append(adalineResult, adaline.evaluate(sampleInput))
+for x in adalineXSamples:
+    adalineResult = np.append(adalineResult, adaline.evaluate(x))
 
 
 # %%
 fig = make_subplots()
 
-# for xSample in xSamples.T:
-#     fig.add_trace(go.Scatter(x=timeSamples, y=xSample, name="Entrada"))
+for xSample in xSamples.T:
+    fig.add_trace(go.Scatter(x=timeSamples, y=xSample, name="Entrada"))
 
 fig.add_trace(go.Scatter(x=timeSamples, y=ySamples, name="Saida"))
 
