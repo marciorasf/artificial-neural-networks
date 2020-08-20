@@ -21,7 +21,7 @@ trainSamplesRatio = 0.9
 nSamplesPerGroup = 200
 
 # %% Initialize data
-firstGroupSigma = 0.4
+firstGroupSigma = 0
 firstGroupMean = [2, 2]
 firstGroupInput = np.random.multivariate_normal(
     firstGroupMean, [[firstGroupSigma, 0], [0, firstGroupSigma]], nSamplesPerGroup
