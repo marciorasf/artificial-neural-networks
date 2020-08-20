@@ -89,9 +89,6 @@ meanSquaredError = np.mean(squarer(testResult))
 print(meanSquaredError)
 
 # %%
-
-
-# %%
 adalineResult = np.array([])
 for sampleInput in adalineXSamples:
     adalineResult = np.append(adalineResult, adaline.evaluate(sampleInput))
