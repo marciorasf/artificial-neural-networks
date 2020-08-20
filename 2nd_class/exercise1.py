@@ -10,8 +10,8 @@ sys.path.insert(1, "../utils")
 from separateIndexesByRatio import separateIndexesByRatio
 
 # %% Initialize data
-filePrefix = "Ex1"
-xDimension = 1
+filePrefix = "Ex2"
+xDimension = 3
 tol = 1e-14
 maxIterations = 100
 trainSamplesRatio = 0.7
@@ -30,7 +30,7 @@ trainIndexes, testIndexes = separateIndexesByRatio(len(timeSamples), 0.7)
 
 
 # %% Initialize and Train Adaline
-adaline = Adaline([1] * (xDimension + 1), 0.1)
+adaline = Adaline([0] * (xDimension + 1), 0.1)
 
 xTrain = adalineXSamples[trainIndexes]
 yTrain = ySamples[trainIndexes]
