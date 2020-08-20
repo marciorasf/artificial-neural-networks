@@ -14,8 +14,8 @@ from separateIndexesByRatio import separateIndexesByRatio
 
 
 # %%
-def getFileData(path):
-    data = np.loadtxt(path, usecols=(1))
+def getFileData(path, cols):
+    data = np.loadtxt(path, usecols=cols)
     return data
 
 
@@ -29,13 +29,14 @@ def getFileDataAlt(path):
 
 
 def addConstantTerm(arr):
-    mapped = map(lambda x: [x, 1], arr)
-    return np.array(list(mapped))
+    oneVector = np.ones((arr.shape[0], 1))
+    newArr = np.concatenate((arr, oneVector), axis=1)
+    return newArr
 
 
 # %%
 class Adaline:
-    def __init__(self, weights=[1], learnRate=1):
+    def __init__(self, weights=[1], learnRate=0.1):
         self.__weights = np.array(weights)
         self.__learnRate = learnRate
         self.__nTrains = 0
@@ -47,36 +48,40 @@ class Adaline:
         approxY = np.dot(xArr, np.transpose(self.__weights))
         return approxY
 
-    def train(self, xArr, y):
+    def singleTrain(self, xArr, y):
         approxY = self.evaluate(xArr)
         learnResult = self.__learnRate * (y - approxY)
-        self.__weights = np.add(self.__weights, np.multiply(learnResult, xArr))
+        self.__weights = np.add(self.__weights, learnResult * xArr)
         self.__nTrains += 1
 
     def test(self, xArr, y):
         approxY = self.evaluate(xArr)
         return y - approxY
 
+    def train(self, xMatrix, yArr, tol=1e-5, maxIterations=1):
+        for _ in range(maxIterations):
+            for index in range(len(yArr)):
+                adaline.singleTrain(xMatrix[index], yArr[index])
+
     def printDetails(self):
         print(f"weights: {self.__weights}\nTimes tested: {self.__nTrains}")
 
 
 # %% Initialize data
-timeSamples = getFileData("data/Ex1_t")
-xSamples = getFileData("data/Ex1_x")
+timeSamples = getFileData("data/Ex2_t", (1))
+xSamples = getFileData("data/Ex2_x", (1, 2, 3))
 adalineXSamples = addConstantTerm(xSamples)
-ySamples = getFileData("data/Ex1_y")
+ySamples = getFileData("data/Ex2_y", (1))
 
 trainSamplesRatio = 0.7
-trainIndexes, testIndexes = separateIndexesByRatio(len(adalineXSamples), 0.7)
+trainIndexes, testIndexes = separateIndexesByRatio(len(timeSamples), 0.7)
 
-# %% Initialize Adaline
-adaline = Adaline([1, 1])
+# %% Initialize and Train Adaline
+adaline = Adaline([1, 1, 1, 1], 0.1)
 
-# %% Train
-for index in trainIndexes:
-    adaline.train(adalineXSamples[index], ySamples[index])
-
+xTrain = adalineXSamples[trainIndexes]
+yTrain = ySamples[trainIndexes]
+adaline.train(xTrain, yTrain, 1e-5, 10)
 # %% Test
 testResult = np.array([])
 for index in testIndexes:
@@ -84,11 +89,9 @@ for index in testIndexes:
         testResult, adaline.test(adalineXSamples[index], ySamples[index])
     )
 
-squarer = np.vectorize(lambda x: x ** 2)
+squarer = np.vectorize(lambda xSample: xSample ** 2)
 meanSquaredError = np.mean(squarer(testResult))
 print(meanSquaredError)
-
-# %%
 
 
 # %%
@@ -100,11 +103,12 @@ for sampleInput in adalineXSamples:
 # %%
 fig = make_subplots()
 
-fig.add_trace(go.Scatter(x=timeSamples, y=xSamples, name="Entrada"),)
+# for xSample in xSamples.T:
+#     fig.add_trace(go.Scatter(x=timeSamples, y=xSample, name="Entrada"))
 
-fig.add_trace(go.Scatter(x=timeSamples, y=ySamples, name="Saida"),)
+fig.add_trace(go.Scatter(x=timeSamples, y=ySamples, name="Saida"))
 
-fig.add_trace(go.Scatter(x=timeSamples, y=adalineResult, name="Adaline"),)
+fig.add_trace(go.Scatter(x=timeSamples, y=adalineResult, name="Adaline"))
 
 fig.show()
 
