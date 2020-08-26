@@ -18,7 +18,7 @@ class Adaline:
             iterationError = 0
             for index in range(len(yArr)):
                 error = self.singleTrain(xMatrix[index], yArr[index])
-                iterationError += error ** 2
+                iterationError += np.power(error, 2)
 
             if iterationError < tol:
                 break
