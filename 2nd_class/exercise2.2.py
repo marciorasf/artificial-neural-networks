@@ -15,34 +15,44 @@ from separateIndexesByRatio import separateIndexesByRatio
 
 # %% Initialize parameters
 adalineDimension = 3
-tol = 1e-5
+tol = 1e-15
 maxIterations = 100
 trainSamplesRatio = 0.9
-nSamplesPerGroup = 200
+nSamplesPerGroup = 100
 
 # %% Initialize data
 firstGroupSigma = 0.4
-firstGroupMean = [2, 2]
-firstGroupInput = np.random.multivariate_normal(
-    firstGroupMean, [[firstGroupSigma, 0], [0, firstGroupSigma]], nSamplesPerGroup
+firstGroupMean = 1
+firstGroupInput = np.concatenate(
+    (
+        np.add(
+            np.random.normal(firstGroupMean, firstGroupSigma, (nSamplesPerGroup, 2)),
+            np.reshape([0, -2] * nSamplesPerGroup, (100, 2)),
+        ),
+        np.add(
+            np.random.normal(-firstGroupMean, firstGroupSigma, (nSamplesPerGroup, 2)),
+            np.reshape([0, 2] * nSamplesPerGroup, (100, 2)),
+        ),
+    )
 )
 firstGroupInput = utils.addConstantTerm(firstGroupInput)
-firstGroupOutput = [1] * nSamplesPerGroup
+firstGroupOutput = [1] * 2 * nSamplesPerGroup
 
 secondGroupSigma = 0.4
-secondGroupMean = [4, 4]
-secondGroupInput = np.random.multivariate_normal(
-    secondGroupMean, [[secondGroupSigma, 0], [0, secondGroupSigma]], nSamplesPerGroup
+secondGroupMean = 1
+secondGroupInput = np.concatenate(
+    (
+        np.random.normal(secondGroupMean, secondGroupSigma, (nSamplesPerGroup, 2)),
+        np.random.normal(-secondGroupMean, secondGroupSigma, (nSamplesPerGroup, 2)),
+    )
 )
 secondGroupInput = utils.addConstantTerm(secondGroupInput)
-secondGroupOutput = [-1] * nSamplesPerGroup
+secondGroupOutput = [-1] * 2 * nSamplesPerGroup
 
 inputData = np.concatenate((firstGroupInput, secondGroupInput))
 outputData = np.concatenate((firstGroupOutput, secondGroupOutput))
 
-trainIndexes, testIndexes = separateIndexesByRatio(
-    2 * nSamplesPerGroup, trainSamplesRatio
-)
+trainIndexes, testIndexes = separateIndexesByRatio(nSamplesPerGroup*4, trainSamplesRatio)
 random.shuffle(trainIndexes)
 
 # %% Initialize and Train Adaline
@@ -65,38 +75,36 @@ print(f"Mean Squared Error: {testResult}")
 # %% Plot
 adalineApproxYArr = adaline.evaluate(inputData)
 
-# fig1 = px.scatter(x=inputData[:, 0], y=inputData[:, 1], color=adalineApproxYArr)
-
-# fig1.show()
-
-# fig2 = px.scatter(x=inputData[:, 0], y=inputData[:, 1], color=outputData)
-
-# fig2.show()
-
-# fig3 = px.line(x=xPlan, y=yPlan)
-
-# fig3.show()
-
 weights = adaline.getWeights()
 
 
 def hyperPlan(x):
-    return -(weights[0] * x + weights[2]) / weights[1]
+    if weights[1] == 0:
+        return 0
+    else:
+        return -(weights[0] * x + weights[2]) / weights[1]
 
 
-xPlan = np.linspace(0, 6, 100)
+xPlan = np.linspace(-3, 3, 100)
 yPlan = np.vectorize(hyperPlan)(xPlan)
 
-fig = go.Figure()
+fig = make_subplots(x_title="x", y_title="y")
 
 # Add traces
-fig.add_trace(go.Scatter(
-    x=inputData[:, 0], 
-    y=inputData[:, 1], 
-    mode="markers", 
-    marker=dict(color=adalineApproxYArr, colorscale='Viridis')
-    ))
-fig.add_trace(go.Scatter(x=xPlan, y=yPlan, mode="lines",))
+fig.add_trace(
+    go.Scatter(
+        x=firstGroupInput[:, 0], y=firstGroupInput[:, 1], mode="markers", name="Grupo 1"
+    )
+)
+fig.add_trace(
+    go.Scatter(
+        x=secondGroupInput[:, 0],
+        y=secondGroupInput[:, 1],
+        mode="markers",
+        name="Grupo 2",
+    )
+)
+fig.add_trace(go.Scatter(x=xPlan, y=yPlan, mode="lines", name="Hiperplano separador"))
 
 fig.show()
 
