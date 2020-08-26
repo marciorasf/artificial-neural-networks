@@ -47,16 +47,16 @@ print(f"Mean Squared Error: {testResult}")
 # %% Plot
 adalineApproxYArr = adaline.evaluate(adalineXSamples)
 
-# fig = make_subplots()
+fig = make_subplots(x_title="t", y_title="y")
 
 # for xSample in xSamples.T:
 #     fig.add_trace(go.Scatter(x=timeSamples, y=xSample, name="Entrada"))
 
-# fig.add_trace(go.Scatter(x=timeSamples, y=ySamples, name="Saida"))
+fig.add_trace(go.Scatter(x=timeSamples, y=ySamples, name="Saida", mode='lines+markers'))
 
-# fig.add_trace(go.Scatter(x=timeSamples, y=adalineApproxYArr, name="Adaline"))
+fig.add_trace(go.Scatter(x=timeSamples, y=adalineApproxYArr, name="Adaline", mode='lines+markers'))
 
-# fig.show()
+fig.show()
 
 # %%
 adaline.printDetails()
