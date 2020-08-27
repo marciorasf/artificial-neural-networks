@@ -1,1 +1,3 @@
 1st_class/images
+*/__pycache__
+.vscode
