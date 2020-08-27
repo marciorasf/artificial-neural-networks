@@ -1,6 +1,5 @@
 import numpy as np
 
-
 class Adaline:
     def __init__(self, weights=[1], learnRate=0.1, activationFunction=lambda x: x):
         self.__weights = np.array(weights)

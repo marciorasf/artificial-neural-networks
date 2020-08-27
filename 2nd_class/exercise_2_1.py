@@ -10,7 +10,7 @@ from adaline import Adaline
 import utils
 
 sys.path.insert(1, "../utils")
-from separateIndexesByRatio import separateIndexesByRatio
+from separate_indexes_by_ratio import separateIndexesByRatio
 
 # %% Initialize parameters
 adalineDimension = 3
