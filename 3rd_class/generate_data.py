@@ -49,6 +49,3 @@ def generateExerciseData():
     df = pd.concat([df1, df2])
 
     return df
-
-
-df = generateExerciseData()
