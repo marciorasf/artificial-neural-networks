@@ -1,5 +1,6 @@
 # %%
 import numpy as np
+from functools import reduce
 
 
 def addOnesColumn(matrix):
@@ -19,6 +20,7 @@ class Mcp:
         self,
         xDimension,
         activationFunction="adaline",
+        purpose = "regression",
         learningRate=0.01,
         initialWeights=None,
     ):
@@ -27,7 +29,8 @@ class Mcp:
             self.activationFunction = activationFunction
         else:
             self.activationFunction = getActivationFunction(activationFunction)
-
+        
+        self.purpose = purpose
         self.learningRate = learningRate
 
         if not initialWeights:
@@ -63,10 +66,18 @@ class Mcp:
 
     def test(self, xMatrix, yVector):
         yApprox = self.evaluate(xMatrix)
+        if self.purpose == "classification":
+            testResult = yVector - yApprox
+            accuracy = reduce(lambda sum, y: sum+1 if y==0 else sum, testResult)
+            return accuracy
+
         return self.calcError(yVector, yApprox)
 
     def calcError(self, y, yApprox):
         return np.linalg.norm((y - yApprox), ord=2)
+
+    def resetWeights(self):
+        self.weights = np.zeros(self.xDimension + 1)
 
     def getWeights(self):
         return self.weights
