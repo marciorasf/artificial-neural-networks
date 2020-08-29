@@ -31,9 +31,7 @@ def readDataFromCSV(filename):
     return data
 
 
-def generateExerciseData():
-    pointsPerGroup = 200
-
+def generateExerciseData(pointsPerGroup):
     firstGroupMean = [2, 2]
     firstGroupCov = [[0.4, 0], [0, 0.4]]
 
@@ -41,10 +39,10 @@ def generateExerciseData():
     secondGroupCov = [[0.4, 0], [0, 0.4]]
 
     df1 = generateData(firstGroupMean, firstGroupCov, pointsPerGroup, lambda x: 1)
-    df2 = generateData(secondGroupMean, secondGroupCov, pointsPerGroup, lambda x: -1)
+    df2 = generateData(secondGroupMean, secondGroupCov, pointsPerGroup, lambda x: 0)
 
     df1["group"] = 1
-    df2["group"] = 1
+    df2["group"] = 2
 
     df = pd.concat([df1, df2])
 
