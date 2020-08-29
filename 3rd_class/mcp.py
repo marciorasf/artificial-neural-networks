@@ -7,16 +7,27 @@ def addOnesColumn(matrix):
     return np.c_[np.ones(dim), matrix]
 
 
-class Perceptron:
+def getActivationFunction(name):
+    if name == "perceptron":
+        return lambda x: 1 if x >= 0 else 0
+    else:
+        return lambda x: x
+
+
+class Mcp:
     def __init__(
         self,
         xDimension,
-        activationFunction=lambda x: 1 if x >= 0 else 0,
+        activationFunction="adaline",
         learningRate=0.1,
         initialWeights=None,
     ):
         self.xDimension = xDimension
-        self.activationFunction = activationFunction
+        if type(activationFunction) == "function":
+            self.activationFunction = activationFunction
+        else:
+            self.activationFunction = getActivationFunction(activationFunction)
+
         self.learningRate = learningRate
 
         if not initialWeights:
