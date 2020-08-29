@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 
 
-def generateData(mean, cov, size, transformFunc):
-    xData = np.atleast_2d(np.random.multivariate_normal(mean, cov, size))
+def generateData(mean, sigma, size, transformFunc):
+    xData = np.random.normal(mean, sigma, (size, 2))
     xDim = xData.shape[1]
     xColumns = [f"x{i}" for i in range(xDim)]
 
@@ -33,13 +33,13 @@ def readDataFromCSV(filename):
 
 def generateExerciseData(pointsPerGroup):
     firstGroupMean = [2, 2]
-    firstGroupCov = [[0.4, 0], [0, 0.4]]
+    firstGroupSigma = 0.4
 
     secondGroupMean = [4, 4]
-    secondGroupCov = [[0.4, 0], [0, 0.4]]
+    secondGroupSigma = 0.4
 
-    df1 = generateData(firstGroupMean, firstGroupCov, pointsPerGroup, lambda x: 1)
-    df2 = generateData(secondGroupMean, secondGroupCov, pointsPerGroup, lambda x: 0)
+    df1 = generateData(firstGroupMean, firstGroupSigma, pointsPerGroup, lambda x: 1)
+    df2 = generateData(secondGroupMean, secondGroupSigma, pointsPerGroup, lambda x: 0)
 
     df1["group"] = 1
     df2["group"] = 2
