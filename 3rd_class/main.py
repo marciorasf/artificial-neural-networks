@@ -31,15 +31,25 @@ def getSeparationSurfaceTrace(x0Limits, x1Limits, evalFunction):
     return go.Surface(x=x0, y=x1, z=z)
 
 
+def getSeparationLineTrace(x0Limits, evalFunction):
+    x0 = np.arange(x0Limits[0], x0Limits[1], 0.01)
+    x1 = np.vectorize(evalFunction)(x0)
+
+    return go.Scatter(x=x0, y=x1)
+
+
 fig = make_subplots()
-fig.add_trace(getSeparationSurfaceTrace([0, 6], [0, 6], perc.evaluate))
-fig.add_trace(
-    go.Scatter3d(
-        x=xMatrix[:, 0], y=xMatrix[:, 1], z=yVector, mode="markers"
-    )
-)
+# fig.add_trace(getSeparationSurfaceTrace([0, 6], [0, 6], perc.evaluate))
+# fig.add_trace(
+#     go.Scatter3d(
+#         x=xMatrix[:, 0], y=xMatrix[:, 1], z=yVector, mode="markers"
+#     )
+# )
+fig.add_trace(getSeparationLineTrace([0, 6], lambda x: -x + 6))
 fig.show()
 
-fig = px.scatter(data, x="x0", y="x1", color="group")
-fig.show()
+# fig = px.scatter(data, x="x0", y="x1", color="group")
+# fig.show()
 
+
+# %%
