@@ -19,7 +19,7 @@ class Mcp:
         self,
         xDimension,
         activationFunction="adaline",
-        learningRate=0.1,
+        learningRate=0.01,
         initialWeights=None,
     ):
         self.xDimension = xDimension

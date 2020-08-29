@@ -23,8 +23,6 @@ perc.printDetails()
 yApprox = perc.evaluate(xMatrix)
 
 
-
-
 # %%
 def getSeparationSurfaceTrace(x0Limits, x1Limits, evalFunction):
     x0 = np.arange(x0Limits[0], x0Limits[1], 0.01)
