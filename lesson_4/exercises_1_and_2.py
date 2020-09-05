@@ -5,11 +5,14 @@ import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
 from ELM import ELM
+from sklearn.model_selection import train_test_split
 
 
 from generate_data import generateExercise1Data, generateExercise2Data
 
 # %% Declare functions
+
+
 def getSeparationSurfaceTrace(x0Limits, x1Limits, evalFunction):
     x0 = np.arange(x0Limits[0], x0Limits[1], 0.01)
     x1 = np.arange(x1Limits[0], x1Limits[1], 0.01)
@@ -24,13 +27,13 @@ def getSeparationLineTrace(x0Limits, evalFunction):
     return go.Scatter(x=x0, y=x1)
 
 
-def runSimulation(nNeurons, X, Y, plot):
+def runSimulation(nNeurons, X, y, plot=False):
     nPoints = data.loc[:, "x0"].shape[0]
-
+    XTrain, XTest, yTrain, yTest = train_test_split(X, y, test_size=0.1)
     elm = ELM(nNeurons, np.sign)
-    elm.fit(X, Y)
-    YApprox = elm.predict(X)
-    nWrongPredicitions = ((Y-YApprox)**2)/4
+    elm.fit(XTrain, yTrain)
+    yApprox = elm.predict(XTest)
+    nWrongPredicitions = ((yTest-yApprox)**2)/4
     accuracy = (nPoints-nWrongPredicitions)/nPoints
 
     if(plot):
@@ -62,17 +65,17 @@ def runSimulation(nNeurons, X, Y, plot):
     return accuracy
 
 
-nNeurons = 50
+nNeurons = 25
 accuracies = []
 nPointsPerGroup = 200
 data = generateExercise2Data(nPointsPerGroup)
 nPoints = data["x0"].shape[0]
 
 X = np.c_[data.loc[:, ["x0", "x1"]].to_numpy(), np.ones(nPoints)]
-Y = data["y0"].to_numpy()
+y = data["y0"].to_numpy()
 
-for _ in range(100):
-    accuracies.append(runSimulation(nNeurons, X, Y, False))
+for _ in range(1):
+    accuracies.append(runSimulation(nNeurons, X, y, True))
 
 accuracies = np.array(accuracies)
 print(accuracies.mean())
