@@ -38,8 +38,10 @@ def generateExercise1Data(pointsPerGroup):
     secondGroupMean = [4, 4]
     secondGroupSigma = 0.4
 
-    df1 = generateData(firstGroupMean, firstGroupSigma, pointsPerGroup, lambda x: 1)
-    df2 = generateData(secondGroupMean, secondGroupSigma, pointsPerGroup, lambda x: -1)
+    df1 = generateData(firstGroupMean, firstGroupSigma,
+                       pointsPerGroup, lambda x: 1)
+    df2 = generateData(secondGroupMean, secondGroupSigma,
+                       pointsPerGroup, lambda x: -1)
 
     df1["group"] = 1
     df2["group"] = 2
@@ -48,19 +50,28 @@ def generateExercise1Data(pointsPerGroup):
 
     return df
 
+
 def generateExercise2Data(pointsPerGroup):
-    firstGroupMean = [2, 2]
+    firstGroupMean = [[2, 2], [4, 4]]
     firstGroupSigma = 0.4
 
-    secondGroupMean = [4, 4]
+    secondGroupMean = [[2, 4], [4, 2]]
     secondGroupSigma = 0.4
 
-    df1 = generateData(firstGroupMean, firstGroupSigma, pointsPerGroup, lambda x: 1)
-    df2 = generateData(secondGroupMean, secondGroupSigma, pointsPerGroup, lambda x: -1)
+    df1 = generateData(firstGroupMean[0], firstGroupSigma,
+                       pointsPerGroup, lambda x: 1)
+    df2 = generateData(firstGroupMean[1], firstGroupSigma,
+                       pointsPerGroup, lambda x: 1)
+    df3 = generateData(secondGroupMean[0], secondGroupSigma,
+                       pointsPerGroup, lambda x: -1)
+    df4 = generateData(secondGroupMean[1], secondGroupSigma,
+                       pointsPerGroup, lambda x: -1)
 
     df1["group"] = 1
-    df2["group"] = 2
+    df2["group"] = 1
+    df3["group"] = 2
+    df4["group"] = 2
 
-    df = pd.concat([df1, df2])
+    df = pd.concat([df1, df2, df3, df4])
 
     return df
