@@ -71,8 +71,8 @@ nPoints = data["x0"].shape[0]
 X = np.c_[data.loc[:, ["x0", "x1"]].to_numpy(), np.ones(nPoints)]
 Y = data["y0"].to_numpy()
 
-for _ in range(1):
-    accuracies.append(runSimulation(nNeurons, X, Y, True))
+for _ in range(100):
+    accuracies.append(runSimulation(nNeurons, X, Y, False))
 
 accuracies = np.array(accuracies)
 print(accuracies.mean())
